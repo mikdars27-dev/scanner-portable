@@ -15,10 +15,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <stddef.h>
 
-#include "config/pinout.h"
-#include "config/config.h"
 #include "ui/display.h"     /* display_t */
 
 #ifdef __cplusplus

@@ -156,7 +156,7 @@ static key_prog_status_t key_prog_enter_programming_session(key_prog_t *kp,
     uint8_t resp[64];
     size_t  resp_len = sizeof(resp);
     st = proto_send(kp->cfg.proto, KEY_PROG_SID_READ_KEYS, req, sizeof(req),
-                    resp, &resp_len, timeout_ms);
+                    resp, sizeof(resp), &resp_len, timeout_ms);
     return key_prog_from_proto(st);
 }
 
@@ -230,7 +230,7 @@ key_prog_status_t key_prog_read_keys(key_prog_t *kp,
 
     st = key_prog_from_proto(
             proto_send(kp->cfg.proto, KEY_PROG_SID_READ_KEYS, req, sizeof(req),
-                       resp, &resp_len, timeout_ms));
+                       resp, sizeof(resp), &resp_len, timeout_ms));
     if (st != KEY_PROG_OK) {
         key_prog_exit_programming_session(kp, timeout_ms);
         return st;
@@ -343,7 +343,7 @@ key_prog_status_t key_prog_add_key(key_prog_t *kp,
     size_t  resp_len = sizeof(resp);
     st = key_prog_from_proto(
             proto_send(kp->cfg.proto, KEY_PROG_SID_ADD_KEY, req, req_len,
-                       resp, &resp_len, timeout_ms));
+                       resp, sizeof(resp), &resp_len, timeout_ms));
 
     /* Keluar dari sesi pemrograman. */
     (void)key_prog_exit_programming_session(kp, timeout_ms);
@@ -399,7 +399,7 @@ key_prog_status_t key_prog_delete_key(key_prog_t *kp,
     size_t  resp_len = sizeof(resp);
     st = key_prog_from_proto(
             proto_send(kp->cfg.proto, KEY_PROG_SID_DELETE_KEY, req, sizeof(req),
-                       resp, &resp_len, timeout_ms));
+                       resp, sizeof(resp), &resp_len, timeout_ms));
 
     (void)key_prog_exit_programming_session(kp, timeout_ms);
     return st;
@@ -495,7 +495,7 @@ key_prog_status_t key_prog_duplicate_key(key_prog_t *kp,
     size_t  resp_len = sizeof(resp);
     st = key_prog_from_proto(
             proto_send(kp->cfg.proto, KEY_PROG_SID_DUPLICATE, req, req_len,
-                       resp, &resp_len, timeout_ms));
+                       resp, sizeof(resp), &resp_len, timeout_ms));
 
     (void)key_prog_exit_programming_session(kp, timeout_ms);
     return st;

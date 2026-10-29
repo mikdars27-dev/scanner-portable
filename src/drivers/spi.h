@@ -69,7 +69,7 @@ typedef struct {
     uint8_t         dummy_bits;   /* dummy cycles after register address (reads) */
 } spi_device_config_t;
 
-typedef struct spi_device spi_device_t;   /* opaque handle */
+typedef struct spi_device scanner_spi_device_t;   /* opaque handle */
 
 /* =========================================================================
  * Bus lifecycle
@@ -84,10 +84,10 @@ spi_status_t spi_bus_init(spi_host_t host, int mosi_gpio, int miso_gpio,
  * handle owns its CS GPIO; the caller must not reuse that GPIO for another
  * purpose. Returns SPI_OK or SPI_ERR_*. */
 spi_status_t spi_device_init(const spi_device_config_t *cfg,
-                             spi_device_t **out_dev);
+                             scanner_spi_device_t **out_dev);
 
 /* Tear down a device (release its handle). CS GPIO is left as-is. */
-spi_status_t spi_device_deinit(spi_device_t *dev);
+spi_status_t spi_device_deinit(scanner_spi_device_t *dev);
 
 /* Tear down an entire host bus (all devices on it must be deinit'd first). */
 spi_status_t spi_bus_deinit(spi_host_t host);
@@ -97,17 +97,17 @@ spi_status_t spi_bus_deinit(spi_host_t host);
  * ========================================================================= */
 
 /* Write bytes to the device. Holds CS for the whole call. */
-spi_status_t spi_write(spi_device_t *dev, const uint8_t *tx_buf, size_t tx_len,
+spi_status_t spi_write(scanner_spi_device_t *dev, const uint8_t *tx_buf, size_t tx_len,
                        uint32_t timeout_ms);
 
 /* Read bytes from the device. Sends 0xFF dummy bytes, samples MISO.
  * Holds CS for the whole call. */
-spi_status_t spi_read(spi_device_t *dev, uint8_t *rx_buf, size_t rx_len,
+spi_status_t spi_read(scanner_spi_device_t *dev, uint8_t *rx_buf, size_t rx_len,
                       uint32_t timeout_ms);
 
 /* Full-duplex transfer. Either tx_buf or rx_buf may be NULL.
  * Holds CS for the whole call. */
-spi_status_t spi_transfer(spi_device_t *dev, const uint8_t *tx_buf,
+spi_status_t spi_transfer(scanner_spi_device_t *dev, const uint8_t *tx_buf,
                           uint8_t *rx_buf, size_t len, uint32_t timeout_ms);
 
 /* =========================================================================
@@ -115,25 +115,25 @@ spi_status_t spi_transfer(spi_device_t *dev, const uint8_t *tx_buf,
  * ========================================================================= */
 
 /* Write one register: [reg_addr][value]. */
-spi_status_t spi_reg_write(spi_device_t *dev, uint8_t reg, uint8_t value);
+spi_status_t spi_reg_write(scanner_spi_device_t *dev, uint8_t reg, uint8_t value);
 
 /* Read one register: [reg_addr][dummy][value_out]. */
-spi_status_t spi_reg_read(spi_device_t *dev, uint8_t reg, uint8_t *value_out);
+spi_status_t spi_reg_read(scanner_spi_device_t *dev, uint8_t reg, uint8_t *value_out);
 
 /* Write a burst: [reg_addr][values[0..count-1]]. */
-spi_status_t spi_reg_write_burst(spi_device_t *dev, uint8_t reg,
+spi_status_t spi_reg_write_burst(scanner_spi_device_t *dev, uint8_t reg,
                                  const uint8_t *values, size_t count);
 
 /* Read a burst: [reg_addr][dummy][out[0..count-1]]. */
-spi_status_t spi_reg_read_burst(spi_device_t *dev, uint8_t reg,
+spi_status_t spi_reg_read_burst(scanner_spi_device_t *dev, uint8_t reg,
                                 uint8_t *out, size_t count);
 
 /* =========================================================================
  * CS control (low-level; use spi_write/read/transfer for normal I/O)
  * ========================================================================= */
 
-spi_status_t spi_cs_assert(spi_device_t *dev);
-spi_status_t spi_cs_release(spi_device_t *dev);
+spi_status_t spi_cs_assert(scanner_spi_device_t *dev);
+spi_status_t spi_cs_release(scanner_spi_device_t *dev);
 
 /* =========================================================================
  * Shared-bus arbitration (MCP2515 + TFT on SPI2_HOST)
@@ -143,17 +143,17 @@ spi_status_t spi_cs_release(spi_device_t *dev);
  * Blocks up to timeout_ms. Returns SPI_OK when locked, SPI_ERR_TIMEOUT if
  * the lock could not be acquired, SPI_ERR_BUSY if already locked by this
  * device handle. */
-spi_status_t spi_bus_lock(spi_device_t *dev, uint32_t timeout_ms);
+spi_status_t spi_bus_lock(scanner_spi_device_t *dev, uint32_t timeout_ms);
 
 /* Release the bus lock. */
-spi_status_t spi_bus_unlock(spi_device_t *dev);
+spi_status_t spi_bus_unlock(scanner_spi_device_t *dev);
 
 /* =========================================================================
  * Accessors
  * ========================================================================= */
 
-uint32_t spi_clock_get_hz(const spi_device_t *dev);
-bool     spi_is_initialized(const spi_device_t *dev);
+uint32_t spi_clock_get_hz(const scanner_spi_device_t *dev);
+bool     spi_is_initialized(const scanner_spi_device_t *dev);
 
 #ifdef __cplusplus
 }

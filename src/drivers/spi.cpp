@@ -27,14 +27,14 @@
 
 typedef struct {
     spi_host_t    host;
-    spi_device_t *devices[SPI_MAX_DEVICES];
+    scanner_spi_device_t *devices[SPI_MAX_DEVICES];
     uint8_t       device_count;
     bool          initialized;
     SPIClass     *spi;            /* &SPI (VSPI) or &HSPI */
     /* Bus lock: owner device handle + deadline (millis). Held across a
      * multi-transfer sequence so MCP2515 config / TFT frame is atomic vs the
      * other device on the same host. */
-    spi_device_t *lock_owner;
+    scanner_spi_device_t *lock_owner;
     uint32_t      lock_deadline_ms;
 } spi_bus_state_t;
 
@@ -88,7 +88,7 @@ spi_status_t spi_bus_init(spi_host_t host, int mosi_gpio, int miso_gpio,
 }
 
 spi_status_t spi_device_init(const spi_device_config_t *cfg,
-                             spi_device_t **out_dev)
+                             scanner_spi_device_t **out_dev)
 {
     if (cfg == NULL || out_dev == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -108,7 +108,7 @@ spi_status_t spi_device_init(const spi_device_config_t *cfg,
         return SPI_ERR_BUSY;
     }
 
-    spi_device_t *dev = (spi_device_t *)calloc(1, sizeof(*dev));
+    scanner_spi_device_t *dev = (scanner_spi_device_t *)calloc(1, sizeof(*dev));
     if (dev == NULL) {
         return SPI_ERR_INVALID_ARG;
     }
@@ -134,7 +134,7 @@ spi_status_t spi_device_init(const spi_device_config_t *cfg,
     return SPI_OK;
 }
 
-spi_status_t spi_device_deinit(spi_device_t *dev)
+spi_status_t spi_device_deinit(scanner_spi_device_t *dev)
 {
     if (dev == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -177,7 +177,7 @@ spi_status_t spi_bus_deinit(spi_host_t host)
 /* ------------------------------------------------------------------------
  * CS control
  * ------------------------------------------------------------------------ */
-spi_status_t spi_cs_assert(spi_device_t *dev)
+spi_status_t spi_cs_assert(scanner_spi_device_t *dev)
 {
     if (dev == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -186,7 +186,7 @@ spi_status_t spi_cs_assert(spi_device_t *dev)
     return SPI_OK;
 }
 
-spi_status_t spi_cs_release(spi_device_t *dev)
+spi_status_t spi_cs_release(scanner_spi_device_t *dev)
 {
     if (dev == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -203,7 +203,7 @@ static uint32_t now_ms(void)
     return (uint32_t)millis();
 }
 
-spi_status_t spi_bus_lock(spi_device_t *dev, uint32_t timeout_ms)
+spi_status_t spi_bus_lock(scanner_spi_device_t *dev, uint32_t timeout_ms)
 {
     if (dev == NULL || dev->bus == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -244,7 +244,7 @@ spi_status_t spi_bus_lock(spi_device_t *dev, uint32_t timeout_ms)
     return SPI_OK;
 }
 
-spi_status_t spi_bus_unlock(spi_device_t *dev)
+spi_status_t spi_bus_unlock(scanner_spi_device_t *dev)
 {
     if (dev == NULL || dev->bus == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -266,7 +266,7 @@ spi_status_t spi_bus_unlock(spi_device_t *dev)
  * Raw transfer — CS held for the whole call; bus lock NOT acquired here
  * (caller wraps multi-transfer sequences with spi_bus_lock/unlock).
  * ------------------------------------------------------------------------ */
-static spi_status_t transfer_locked(spi_device_t *dev,
+static spi_status_t transfer_locked(scanner_spi_device_t *dev,
                                     const uint8_t *tx_buf, uint8_t *rx_buf,
                                     size_t len, uint32_t timeout_ms)
 {
@@ -293,7 +293,7 @@ static spi_status_t transfer_locked(spi_device_t *dev,
     return SPI_OK;
 }
 
-spi_status_t spi_write(spi_device_t *dev, const uint8_t *tx_buf, size_t tx_len,
+spi_status_t spi_write(scanner_spi_device_t *dev, const uint8_t *tx_buf, size_t tx_len,
                        uint32_t timeout_ms)
 {
     if (dev == NULL || dev->bus == NULL || !dev->bus->initialized) {
@@ -305,7 +305,7 @@ spi_status_t spi_write(spi_device_t *dev, const uint8_t *tx_buf, size_t tx_len,
     return transfer_locked(dev, tx_buf, NULL, tx_len, timeout_ms);
 }
 
-spi_status_t spi_read(spi_device_t *dev, uint8_t *rx_buf, size_t rx_len,
+spi_status_t spi_read(scanner_spi_device_t *dev, uint8_t *rx_buf, size_t rx_len,
                       uint32_t timeout_ms)
 {
     if (dev == NULL || dev->bus == NULL || !dev->bus->initialized) {
@@ -317,7 +317,7 @@ spi_status_t spi_read(spi_device_t *dev, uint8_t *rx_buf, size_t rx_len,
     return transfer_locked(dev, NULL, rx_buf, rx_len, timeout_ms);
 }
 
-spi_status_t spi_transfer(spi_device_t *dev, const uint8_t *tx_buf,
+spi_status_t spi_transfer(scanner_spi_device_t *dev, const uint8_t *tx_buf,
                           uint8_t *rx_buf, size_t len, uint32_t timeout_ms)
 {
     if (dev == NULL || dev->bus == NULL || !dev->bus->initialized) {
@@ -332,13 +332,13 @@ spi_status_t spi_transfer(spi_device_t *dev, const uint8_t *tx_buf,
 /* ------------------------------------------------------------------------
  * Register helpers (command + data frames, CS held across the frame)
  * ------------------------------------------------------------------------ */
-spi_status_t spi_reg_write(spi_device_t *dev, uint8_t reg, uint8_t value)
+spi_status_t spi_reg_write(scanner_spi_device_t *dev, uint8_t reg, uint8_t value)
 {
     uint8_t frame[2] = { reg, value };
     return spi_write(dev, frame, sizeof(frame), 1000);
 }
 
-spi_status_t spi_reg_read(spi_device_t *dev, uint8_t reg, uint8_t *value_out)
+spi_status_t spi_reg_read(scanner_spi_device_t *dev, uint8_t reg, uint8_t *value_out)
 {
     if (value_out == NULL) {
         return SPI_ERR_INVALID_ARG;
@@ -358,7 +358,7 @@ spi_status_t spi_reg_read(spi_device_t *dev, uint8_t reg, uint8_t *value_out)
     return SPI_OK;
 }
 
-spi_status_t spi_reg_write_burst(spi_device_t *dev, uint8_t reg,
+spi_status_t spi_reg_write_burst(scanner_spi_device_t *dev, uint8_t reg,
                                  const uint8_t *values, size_t count)
 {
     if (values == NULL || count == 0) {
@@ -370,7 +370,7 @@ spi_status_t spi_reg_write_burst(spi_device_t *dev, uint8_t reg,
     return spi_write(dev, values, count, 1000);
 }
 
-spi_status_t spi_reg_read_burst(spi_device_t *dev, uint8_t reg,
+spi_status_t spi_reg_read_burst(scanner_spi_device_t *dev, uint8_t reg,
                                 uint8_t *out, size_t count)
 {
     if (out == NULL || count == 0) {
@@ -391,12 +391,12 @@ spi_status_t spi_reg_read_burst(spi_device_t *dev, uint8_t reg,
 /* ------------------------------------------------------------------------
  * Accessors
  * ------------------------------------------------------------------------ */
-uint32_t spi_clock_get_hz(const spi_device_t *dev)
+uint32_t spi_clock_get_hz(const scanner_spi_device_t *dev)
 {
     return (dev != NULL) ? dev->clock_hz : 0;
 }
 
-bool spi_is_initialized(const spi_device_t *dev)
+bool spi_is_initialized(const scanner_spi_device_t *dev)
 {
     return (dev != NULL && dev->bus != NULL && dev->bus->initialized);
 }

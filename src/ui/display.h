@@ -75,7 +75,7 @@ typedef struct display display_t;
  * Config
  * ========================================================================= */
 typedef struct {
-    spi_device_t *spi_dev;   /* SPI device handle untuk TFT (SPI2_HOST) */
+    scanner_spi_device_t *spi_dev;   /* SPI device handle untuk TFT (SPI2_HOST) */
     int          cs_gpio;    /* Chip select */
     int          dc_gpio;    /* Data/Command select */
     int          rst_gpio;   /* Reset */

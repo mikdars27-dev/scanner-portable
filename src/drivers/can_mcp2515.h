@@ -26,7 +26,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "spi.h"     /* spi_device_t, spi_status_t */
+#include "spi.h"     /* scanner_spi_device_t, spi_status_t */
 
 #ifdef __cplusplus
 extern "C" {
@@ -149,7 +149,7 @@ typedef struct {
 } can_frame_t;
 
 typedef struct {
-    spi_device_t *spi_dev;   /* MCP2515 on SPI, CS GPIO 5 */
+    scanner_spi_device_t *spi_dev;   /* MCP2515 on SPI, CS GPIO 5 */
     int          int_gpio;   /* MCP2515 INT, GPIO 4 */
     uint32_t     baudrate;   /* 500000 */
     bool         loopback;   /* self-test mode */

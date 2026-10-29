@@ -33,7 +33,7 @@ static const uint8_t MCP_RTS_INSTR[3] = { MCP_INSTR_RTS_TX0,  MCP_INSTR_RTS_TX1,
  * ------------------------------------------------------------------------ */
 
 /* Write one MCP2515 register: [INSTR_WRITE][addr][data]. */
-static can_status_t mcp_write_reg(spi_device_t *spi, uint8_t reg, uint8_t val)
+static can_status_t mcp_write_reg(scanner_spi_device_t *spi, uint8_t reg, uint8_t val)
 {
     uint8_t buf[3] = { MCP_INSTR_WRITE, reg, val };
     spi_status_t st = spi_write(spi, buf, sizeof(buf), 100);
@@ -41,7 +41,7 @@ static can_status_t mcp_write_reg(spi_device_t *spi, uint8_t reg, uint8_t val)
 }
 
 /* Read one MCP2515 register: [INSTR_READ][addr][0xFF] -> [dummy][data]. */
-static can_status_t mcp_read_reg(spi_device_t *spi, uint8_t reg, uint8_t *val)
+static can_status_t mcp_read_reg(scanner_spi_device_t *spi, uint8_t reg, uint8_t *val)
 {
     uint8_t tx[3] = { MCP_INSTR_READ, reg, 0xFF };
     uint8_t rx[3] = { 0, 0, 0 };
@@ -52,7 +52,7 @@ static can_status_t mcp_read_reg(spi_device_t *spi, uint8_t reg, uint8_t *val)
 }
 
 /* Bit-modify: [INSTR_BITMOD][addr][mask][data]. */
-static can_status_t mcp_bit_modify(spi_device_t *spi, uint8_t reg,
+static can_status_t mcp_bit_modify(scanner_spi_device_t *spi, uint8_t reg,
                                    uint8_t mask, uint8_t data)
 {
     uint8_t buf[4] = { MCP_INSTR_BITMOD, reg, mask, data };
@@ -61,7 +61,7 @@ static can_status_t mcp_bit_modify(spi_device_t *spi, uint8_t reg,
 }
 
 /* Reset MCP2515. */
-static can_status_t mcp_reset(spi_device_t *spi)
+static can_status_t mcp_reset(scanner_spi_device_t *spi)
 {
     uint8_t instr = MCP_INSTR_RESET;
     spi_status_t st = spi_write(spi, &instr, 1, 100);
@@ -69,7 +69,7 @@ static can_status_t mcp_reset(spi_device_t *spi)
 }
 
 /* Request-to-send on a TX buffer. */
-static can_status_t mcp_rts(spi_device_t *spi, uint8_t txb_idx)
+static can_status_t mcp_rts(scanner_spi_device_t *spi, uint8_t txb_idx)
 {
     uint8_t instr = MCP_RTS_INSTR[txb_idx];
     spi_status_t st = spi_write(spi, &instr, 1, 100);

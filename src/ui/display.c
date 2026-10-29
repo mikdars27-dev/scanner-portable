@@ -49,7 +49,7 @@
  * Internal handle
  * ========================================================================= */
 struct display {
-    spi_device_t *spi_dev;
+    scanner_spi_device_t *spi_dev;
     int           cs_gpio;
     int           dc_gpio;
     int           rst_gpio;

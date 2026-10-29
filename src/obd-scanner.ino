@@ -68,8 +68,8 @@
 /* -------------------------------------------------------------------------
  * Global handles (one active transport at a time)
  * ----------------------------------------------------------------------- */
-static spi_device_t  *g_spi_can     = NULL;
-static spi_device_t  *g_spi_tft     = NULL;
+static scanner_spi_device_t  *g_spi_can     = NULL;
+static scanner_spi_device_t  *g_spi_tft     = NULL;
 static display_t     *g_disp        = NULL;
 static can_t         *g_can         = NULL;
 static iso15765_t    *g_iso         = NULL;
