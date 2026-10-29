@@ -32,4 +32,8 @@ jobs:
         with:
           name: firmware-esp32dev
           path: .pio/build/esp32dev/firmware.bin
+<<<<<<< HEAD
           retention-days: 7
+=======
+          retention-days: 8
+>>>>>>> dfc6cc10a17c2b8a5f4eb5e07a5ddab2d9c11bcf
