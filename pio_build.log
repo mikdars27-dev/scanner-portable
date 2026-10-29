@@ -1,0 +1,4 @@
+C:\Users\sm_3g\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.8.0) or chardet (7.7.0)/charset_normalizer (3.5.2) doesn't match a supported version!
+  warnings.warn(
+Processing esp32dev (platform: espressif32; board: esp32dev; framework: arduino)
+--------------------------------------------------------------------------------
