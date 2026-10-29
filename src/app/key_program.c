@@ -144,7 +144,7 @@ static key_prog_status_t key_prog_enter_programming_session(key_prog_t *kp,
     }
 
     /* Coba via K-Line/UDS session control terlebih dahulu. */
-    proto_status_t st = kline_proto_uds_session(kp->cfg.proto,
+    proto_status_t st = kline_proto_uds_session(proto_kline_handle(kp->cfg.proto),
             KLINE_PROTO_SESSION_PROGRAMMING, timeout_ms);
     if (st == PROTO_OK) {
         return KEY_PROG_OK;
@@ -182,7 +182,7 @@ static key_prog_status_t key_prog_request_seed(key_prog_t *kp,
         return KEY_PROG_ERR_INVALID_ARG;
     }
 
-    proto_status_t st = kline_proto_uds_seed(kp->cfg.proto,
+    proto_status_t st = kline_proto_uds_seed(proto_kline_handle(kp->cfg.proto),
             KEY_PROG_SECURITY_LEVEL, seed, seed_len, timeout_ms);
     return key_prog_from_proto(st);
 }
@@ -196,7 +196,7 @@ static key_prog_status_t key_prog_send_key(key_prog_t *kp,
         return KEY_PROG_ERR_INVALID_ARG;
     }
 
-    proto_status_t st = kline_proto_uds_key(kp->cfg.proto,
+    proto_status_t st = kline_proto_uds_key(proto_kline_handle(kp->cfg.proto),
             KEY_PROG_SECURITY_LEVEL + 1U, key, key_len, timeout_ms);
     return key_prog_from_proto(st);
 }

@@ -218,14 +218,14 @@ motorcycle_status_t motorcycle_detect_brand(motorcycle_t *moto,
     if (!moto->initialized) {
         return MOTORCYCLE_ERR_NOT_INITIALIZED;
     }
-    if (moto->proto == NULL || !proto_is_initialized(moto->proto)) {
+    if (moto->cfg.proto == NULL || !proto_is_initialized(moto->cfg.proto)) {
         return MOTORCYCLE_ERR_NOT_INITIALIZED;
     }
 
     dtc_entry_t entries[8];
     dtc_list_t list = { .entries = entries, .count = 0, .capacity = sizeof(entries) / sizeof(entries[0]) };
 
-    proto_status_t pst = proto_read_dtcs(moto->proto, J1979_MODE_DTC_CONFIRMED,
+    proto_status_t pst = proto_read_dtcs(moto->cfg.proto, J1979_MODE_DTC_CONFIRMED,
                                          &list, timeout_ms);
     if (pst != PROTO_OK) {
         return MOTORCYCLE_ERR_PROTOCOL;
