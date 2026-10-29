@@ -34,6 +34,7 @@ typedef enum {
     FREEZE_FRAME_ERR_PROTOCOL          = -3,
     FREEZE_FRAME_ERR_BUFFER_TOO_SMALL  = -4,
     FREEZE_FRAME_ERR_NOT_SUPPORTED     = -5,   /* not CAN/J1979 transport */
+    FREEZE_FRAME_ERR_TIMEOUT           = -6,   /* underlying transport timeout */
 } freeze_frame_status_t;
 
 /* =========================================================================

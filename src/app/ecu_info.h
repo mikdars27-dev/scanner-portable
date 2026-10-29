@@ -32,6 +32,7 @@ typedef enum {
     ECU_INFO_ERR_PROTOCOL          = -3,
     ECU_INFO_ERR_BUFFER_TOO_SMALL  = -4,
     ECU_INFO_ERR_NOT_SUPPORTED     = -5,   /* transport or PID/DID not supported */
+    ECU_INFO_ERR_TIMEOUT           = -6,   /* underlying transport timeout */
 } ecu_info_status_t;
 
 /* =========================================================================

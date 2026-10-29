@@ -38,6 +38,7 @@ typedef enum {
                                                  * or test not supported on
                                                  * the active transport */
     SENSOR_TEST_ERR_BUFFER_TOO_SMALL  = -4,   /* out_buf cannot hold the result */
+    SENSOR_TEST_ERR_TIMEOUT           = -5,   /* underlying transport timeout */
 } sensor_test_status_t;
 
 /* =========================================================================

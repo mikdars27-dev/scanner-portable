@@ -35,6 +35,7 @@ typedef enum {
     LIVE_DATA_ERR_NOT_INITIALIZED   = -2,
     LIVE_DATA_ERR_PROTOCOL          = -3,
     LIVE_DATA_ERR_BUFFER_TOO_SMALL  = -4,
+    LIVE_DATA_ERR_TIMEOUT           = -5,   /* underlying transport timeout */
 } live_data_status_t;
 
 /* =========================================================================

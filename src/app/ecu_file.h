@@ -39,6 +39,7 @@ typedef enum {
     ECU_FILE_ERR_FILE_NOT_FOUND    = -5,    /* requested file not on SD */
     ECU_FILE_ERR_NO_BACKUP         = -6,    /* no backup for this ecu_id */
     ECU_FILE_ERR_INTEGRITY         = -7,    /* backup image failed integrity check */
+    ECU_FILE_ERR_TIMEOUT           = -8,    /* underlying protocol/IO timeout */
 } ecu_file_status_t;
 
 /* =========================================================================
