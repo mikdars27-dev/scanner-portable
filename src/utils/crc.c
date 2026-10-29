@@ -7,6 +7,7 @@
 #include "utils/crc.h"
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <stddef.h>
 
 /* Reflected CRC-32 table, polynomial 0xEDB88320. Built lazily on first use. */
