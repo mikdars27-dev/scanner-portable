@@ -22,7 +22,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "uart.h"      /* uart_t, uart_status_t, uart_port_t */
+#include "uart.h"      /* scanner_uart_t, uart_status_t, scanner_uart_port_t */
 #include "config/pinout.h"
 
 #ifdef __cplusplus
@@ -50,7 +50,7 @@ typedef enum {
  * Types
  * ========================================================================= */
 typedef struct {
-    uart_port_t uart_port;        /* UART_PORT_1 for K-Line (UART_PORT_0 rejected) */
+    scanner_uart_port_t uart_port;        /* UART_PORT_1 for K-Line (UART_PORT_0 rejected) */
     int         tx_gpio;          /* K-Line TX (to PC817) */
     int         rx_gpio;          /* K-Line RX (from PC817) */
     uint32_t    baud_data;        /* 10400 for ISO 9141-2 data phase */
@@ -131,7 +131,7 @@ kline_status_t kline_transfer(kline_t *kline, const uint8_t *tx, size_t tx_len,
  * ========================================================================= */
 uint32_t kline_baud_get(const kline_t *kline);
 bool     kline_is_initialized(const kline_t *kline);
-bool     kline_port_is_reserved(uart_port_t port);
+bool     kline_port_is_reserved(scanner_uart_port_t port);
 
 #ifdef __cplusplus
 }

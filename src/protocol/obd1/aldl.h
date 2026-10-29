@@ -19,7 +19,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-#include "drivers/uart.h"   /* uart_t, uart_status_t, uart_port_t */
+#include "drivers/uart.h"   /* scanner_uart_t, uart_status_t, scanner_uart_port_t */
 #include "protocol/dtc.h"   /* dtc_list_t */
 
 #ifdef __cplusplus
@@ -54,7 +54,7 @@ typedef struct aldl aldl_t;
  * Config
  * ========================================================================= */
 typedef struct {
-    uart_port_t uart_port;   /* UART_PORT_1 or UART_PORT_2 (not PORT_0) */
+    scanner_uart_port_t uart_port;   /* UART_PORT_1 or UART_PORT_2 (not PORT_0) */
     int         tx_gpio;     /* ALDL TX pin */
     int         rx_gpio;     /* ALDL RX pin */
     uint32_t    baud;        /* ALDL_BAUD_8192 or ALDL_BAUD_160 */

@@ -17,7 +17,7 @@
  * Internal state (singleton; no dynamic allocation)
  * ------------------------------------------------------------------------ */
 struct recovery {
-    uart_t             *uart;     /* UART_PORT_2 handle, or NULL */
+    scanner_uart_t             *uart;     /* UART_PORT_2 handle, or NULL */
     recovery_config_t   cfg;      /* active configuration */
     bool                initialized;
     volatile bool       exit_requested; /* set by recovery_exit(), polled by recovery_enter() */

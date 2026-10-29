@@ -25,7 +25,7 @@
 #define UART_MAX_PORTS 3
 
 typedef struct {
-    uart_port_t port;
+    scanner_uart_port_t port;
     HardwareSerial *serial;   /* &Serial, &Serial1, or &Serial2 */
     int         tx_gpio;      /* kept so set_baud() can re-apply pins */
     int         rx_gpio;
@@ -38,7 +38,7 @@ typedef struct {
 
 static uart_handle_t g_handles[UART_MAX_PORTS];
 
-static uart_handle_t *handle_for_port(uart_port_t port)
+static uart_handle_t *handle_for_port(scanner_uart_port_t port)
 {
     if (port < UART_PORT_0 || port > UART_PORT_2) {
         return NULL;
@@ -46,7 +46,7 @@ static uart_handle_t *handle_for_port(uart_port_t port)
     return &g_handles[port];
 }
 
-static HardwareSerial *serial_for_port(uart_port_t port)
+static HardwareSerial *serial_for_port(scanner_uart_port_t port)
 {
     switch (port) {
         case UART_PORT_0: return &Serial;
@@ -59,7 +59,7 @@ static HardwareSerial *serial_for_port(uart_port_t port)
 /* ------------------------------------------------------------------------
  * Lifecycle
  * ------------------------------------------------------------------------ */
-uart_status_t uart_init(const uart_config_t *cfg, uart_t **out_uart)
+uart_status_t uart_init(const uart_config_t *cfg, scanner_uart_t **out_uart)
 {
     if (cfg == NULL || out_uart == NULL) {
         return UART_ERR_INVALID_ARG;
@@ -105,12 +105,12 @@ uart_status_t uart_init(const uart_config_t *cfg, uart_t **out_uart)
     h->rx_timeout_ms   = cfg->rx_timeout_ms;
 
     if (out_uart != NULL) {
-        *out_uart = (uart_t *)h;
+        *out_uart = (scanner_uart_t *)h;
     }
     return UART_OK;
 }
 
-uart_status_t uart_deinit(uart_t *uart)
+uart_status_t uart_deinit(scanner_uart_t *uart)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
     if (h == NULL) {
@@ -127,7 +127,7 @@ uart_status_t uart_deinit(uart_t *uart)
 /* ------------------------------------------------------------------------
  * I/O
  * ------------------------------------------------------------------------ */
-uart_status_t uart_write(uart_t *uart, const uint8_t *buf, size_t len,
+uart_status_t uart_write(scanner_uart_t *uart, const uint8_t *buf, size_t len,
                          uint32_t timeout_ms)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
@@ -147,7 +147,7 @@ uart_status_t uart_write(uart_t *uart, const uint8_t *buf, size_t len,
     return UART_OK;
 }
 
-uart_status_t uart_read(uart_t *uart, uint8_t *buf, size_t len, size_t *out_len,
+uart_status_t uart_read(scanner_uart_t *uart, uint8_t *buf, size_t len, size_t *out_len,
                         uint32_t timeout_ms)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
@@ -183,7 +183,7 @@ uart_status_t uart_read(uart_t *uart, uint8_t *buf, size_t len, size_t *out_len,
     return (got > 0) ? UART_OK : UART_ERR_TIMEOUT;
 }
 
-uart_status_t uart_flush(uart_t *uart, uint32_t timeout_ms)
+uart_status_t uart_flush(scanner_uart_t *uart, uint32_t timeout_ms)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
     if (h == NULL || !h->initialized || h->serial == NULL) {
@@ -194,7 +194,7 @@ uart_status_t uart_flush(uart_t *uart, uint32_t timeout_ms)
     return UART_OK;
 }
 
-uart_status_t uart_set_baud(uart_t *uart, uint32_t baud)
+uart_status_t uart_set_baud(scanner_uart_t *uart, uint32_t baud)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
     if (h == NULL || !h->initialized || h->serial == NULL) {
@@ -208,7 +208,7 @@ uart_status_t uart_set_baud(uart_t *uart, uint32_t baud)
     return UART_OK;
 }
 
-uart_status_t uart_available(uart_t *uart, size_t *count)
+uart_status_t uart_available(scanner_uart_t *uart, size_t *count)
 {
     uart_handle_t *h = (uart_handle_t *)uart;
     if (h == NULL || !h->initialized || h->serial == NULL) {
@@ -224,18 +224,18 @@ uart_status_t uart_available(uart_t *uart, size_t *count)
 /* ------------------------------------------------------------------------
  * Helpers
  * ------------------------------------------------------------------------ */
-bool uart_port_is_reserved(uart_port_t port)
+bool uart_port_is_reserved(scanner_uart_port_t port)
 {
     return port == UART_PORT_0;
 }
 
-uint32_t uart_baud_get(const uart_t *uart)
+uint32_t uart_baud_get(const scanner_uart_t *uart)
 {
     const uart_handle_t *h = (const uart_handle_t *)uart;
     return (h != NULL) ? h->baud : 0;
 }
 
-bool uart_is_initialized(const uart_t *uart)
+bool uart_is_initialized(const scanner_uart_t *uart)
 {
     const uart_handle_t *h = (const uart_handle_t *)uart;
     return (h != NULL && h->initialized);

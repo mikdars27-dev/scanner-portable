@@ -63,7 +63,7 @@ typedef struct recovery recovery_t;
  * ========================================================================= */
 
 typedef struct {
-    uart_port_t port;      /* UART_PORT_2 */
+    scanner_uart_port_t port;      /* UART_PORT_2 */
     int         tx_gpio;   /* recovery UART TX pin */
     int         rx_gpio;   /* recovery UART RX pin */
     uint32_t    baud;      /* 115200 */

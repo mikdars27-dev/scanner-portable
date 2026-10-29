@@ -27,7 +27,7 @@ typedef enum {
 
 struct kline {
     kline_config_t cfg;
-    uart_t        *uart;        /* NULL until kline_begin() switches to data phase */
+    scanner_uart_t        *uart;        /* NULL until kline_begin() switches to data phase */
     kline_phase_t  phase;
     bool           initialized;
 };
@@ -361,7 +361,7 @@ bool kline_is_initialized(const kline_t *kline)
     return (kline != NULL && kline->initialized);
 }
 
-bool kline_port_is_reserved(uart_port_t port)
+bool kline_port_is_reserved(scanner_uart_port_t port)
 {
     return port == UART_PORT_0;
 }

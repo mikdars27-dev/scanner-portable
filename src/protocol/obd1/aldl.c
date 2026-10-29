@@ -28,7 +28,7 @@
 struct aldl {
     aldl_config_t cfg;
     bool          initialized;
-    uart_t       *uart;
+    scanner_uart_t       *uart;
 
     /* Receive state machine. */
     typedef enum {
