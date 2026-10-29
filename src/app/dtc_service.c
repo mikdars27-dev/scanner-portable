@@ -79,19 +79,19 @@ dtc_service_status_t dtc_service_read_dtcs(dtc_service_t *svc, uint8_t mode,
     if (svc == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
     if (!svc->initialized) return DTC_SERVICE_ERR_NOT_INITIALIZED;
     if (list == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
-    if (svc->proto == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
+    if (svc->cfg.proto == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
 
-    proto_status_t pst = proto_read_dtcs(svc->proto, mode, list, timeout_ms);
+    proto_status_t pst = proto_read_dtcs(svc->cfg.proto, mode, list, timeout_ms);
     if (pst != PROTO_OK) {
         return dtc_service_from_proto(pst);
     }
 
     /* Enrich descriptions with a brand-specific lookup when a brand is set.
      * Keep the protocol-supplied description when no brand entry matches. */
-    if (svc->brand != NULL) {
+    if (svc->cfg.brand != NULL) {
         for (size_t i = 0; i < list->count; i++) {
             char desc[64];
-            dtc_status_t dst = dtc_lookup(svc->brand, list->entries[i].code,
+            dtc_status_t dst = dtc_lookup(svc->cfg.brand, list->entries[i].code,
                                           desc, sizeof(desc));
             if (dst == DTC_OK) {
                 strncpy(list->entries[i].desc, desc,
@@ -109,9 +109,9 @@ dtc_service_status_t dtc_service_clear_dtcs(dtc_service_t *svc,
 {
     if (svc == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
     if (!svc->initialized) return DTC_SERVICE_ERR_NOT_INITIALIZED;
-    if (svc->proto == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
+    if (svc->cfg.proto == NULL) return DTC_SERVICE_ERR_INVALID_ARG;
 
-    proto_status_t pst = proto_clear_dtcs(svc->proto, timeout_ms);
+    proto_status_t pst = proto_clear_dtcs(svc->cfg.proto, timeout_ms);
     return dtc_service_from_proto(pst);
 }
 
